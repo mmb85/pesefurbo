@@ -17,7 +17,7 @@ class Player < ApplicationRecord
   POSITIONS = %w[GK SW CB LB RB DM CM AM LW RW ST SS].freeze
   FEET      = %w[left right both].freeze
 
-  validates :first_name, :last_name, :known_as, presence: true
+  validates :first_name, :known_as, presence: true
   validates :position, inclusion: { in: POSITIONS }
   validates :preferred_foot, inclusion: { in: FEET }
   validates :date_of_birth, presence: true

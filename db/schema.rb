@@ -271,7 +271,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_200846) do
   create_table "player_season_stats", force: :cascade do |t|
     t.integer "appearances", default: 0, null: false
     t.integer "assists", default: 0, null: false
-    t.integer "avg_rating", default: 60, null: false
+    t.integer "avg_rating", default: 0, null: false
     t.integer "clean_sheets", default: 0, null: false
     t.bigint "club_id", null: false
     t.bigint "competition_season_id", null: false
@@ -322,7 +322,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_200846) do
     t.integer "growth_rate", default: 0, null: false
     t.integer "height_cm"
     t.string "known_as", null: false
-    t.string "last_name", null: false
+    t.string "last_name"
     t.decimal "market_value", precision: 14, scale: 2, default: "0.0", null: false
     t.bigint "nationality_id", null: false
     t.integer "overall_rating", default: 50, null: false

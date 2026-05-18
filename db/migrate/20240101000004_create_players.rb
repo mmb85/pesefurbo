@@ -3,7 +3,7 @@ class CreatePlayers < ActiveRecord::Migration[8.0]
   def change
     create_table :players do |t|
       t.string  :first_name,    null: false
-      t.string  :last_name,     null: false
+      t.string  :last_name,
       t.string  :known_as,      null: false
       t.references :nationality,
                    foreign_key: { to_table: :countries }, null: false

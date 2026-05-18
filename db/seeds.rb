@@ -17,6 +17,7 @@ spain = Country.find_or_create_by!(code: 'ESP') do |c|
 end
 
 # Create season
+puts "Creating season 1996/97..."
 season = Season.find_or_create_by!(name: '1996/97') do |s|
   s.year_start = 1996
   s.year_end = 1997
@@ -26,6 +27,7 @@ season = Season.find_or_create_by!(name: '1996/97') do |s|
 end
 
 # Create competition (Primera División)
+puts "Creating competition Primera División..."
 liga = Competition.find_or_create_by!(short_name: 'Primera') do |c|
   c.name = 'Primera División'
   c.competition_type = 'league'
@@ -34,6 +36,7 @@ liga = Competition.find_or_create_by!(short_name: 'Primera') do |c|
 end
 
 # Create competition season
+puts "Creating competition season for Primera División 1996/97..."
 cs = CompetitionSeason.find_or_create_by!(competition: liga, season: season) do |c|
   c.rounds_total = 38
   c.teams_count = 20
@@ -76,6 +79,31 @@ POSITION_MAPPING = {
 # PHASE 3: PROCESS CSV DATA
 # -------------------------------------------------------------------------
 
+CLUB_ABBR_MAPPING = {
+  "CD Tenerife" => "TEN",
+  "Hércules CF" => "HER",
+  "SD Compostela" => "COM",
+  "Real Oviedo" => "OVI",
+  "Real Sporting de Gijón" => "SPO",
+  "Valencia CF" => "VAL",
+  "RC Celta de Vigo" => "CEL",
+  "RC Deportivo de La Coruña" => "DEP",
+  "CF Extremadura" => "EXT",
+  "RCD Espanyol" => "ESP",
+  "Real Sociedad" => "RSO",
+  "Atlético de Madrid" => "ATM",
+  "Real Racing Club" => "RAC",
+  "Athletic Club" => "ATH",
+  "Real Madrid CF" => "RMA",
+  "Sevilla FC" => "SEV",
+  "Rayo Vallecano" => "RAY",
+  "Real Valladolid CF" => "VAD",
+  "CD Logroñés" => "LOG",
+  "Real Betis Balompié" => "BET",
+  "Real Zaragoza" => "ZAR",
+  "FC Barcelona" => "BAR"
+}.freeze
+
 CSV.foreach('csv_lite_optimized.csv', headers: true) do |row|
   # Skip rows with missing essential data
   next unless row['Equipo'].present? && row['Jugador'].present? && row['Posicion'].present? && row['Media'].present?
@@ -83,7 +111,7 @@ CSV.foreach('csv_lite_optimized.csv', headers: true) do |row|
   team_name = row['Equipo'].strip
   club = Club.find_or_create_by!(name: team_name) do |c|
     c.short_name = team_name.split(' ').first
-    c.abbr = team_name[0..2].upcase
+    c.abbr = CLUB_ABBR_MAPPING[team_name] || team_name[0..2].upcase
     c.country = spain
     # Create a generic stadium if none exists for this club
     c.stadium ||= Stadium.find_or_create_by!(name: 'Estadio Principal', city: 'Ciudad', country: spain)
@@ -99,17 +127,26 @@ CSV.foreach('csv_lite_optimized.csv', headers: true) do |row|
   overall_rating = row['Media'].to_f
 
   # Create player
-  player = Player.find_or_create_by!(known_as: row['Jugador'].strip) do |p|
-    p.first_name = first_name
-    p.last_name = last_name
-    p.position = position
-    p.overall_rating = overall_rating
-    p.nationality = spain
-    p.date_of_birth = Date.new(1990, 1, 1)
+  player = Player.joins(:contracts).find_by(known_as: row['Jugador'].strip, contracts: { club_id: club.id })
+
+  if player.nil?
+    puts "Creating player #{row['Jugador']} for club #{team_name} with position #{position} and rating #{overall_rating}..."
+    player = Player.create!(
+      known_as: row['Jugador'].strip,
+      first_name: first_name,
+      last_name: last_name,
+      position: position,
+      overall_rating: overall_rating,
+      nationality: spain,
+      date_of_birth: Date.new(1990, 1, 1)
+    )
+  else
+    puts "Player #{row['Jugador']} already exists for club #{team_name}, skipping player creation..."
   end
 
   # Create contract for the player
-  Contract.find_or_create_by!(player: player, club: club, active: true) do |c|
+  puts "Creating contract for #{player.known_as} at #{club.name} with rating #{overall_rating}..."
+  Contract.find_or_create_by!(player: player, club: club, season: season, active: true) do |c|
     c.starts_on = Date.today
     c.expires_on = Date.today + 3.years
     c.weekly_wage = overall_rating * 1200
@@ -118,9 +155,8 @@ CSV.foreach('csv_lite_optimized.csv', headers: true) do |row|
   end
 
   # Populate player season stats with overall_rating
-  PlayerSeasonStat.find_or_create_by!(player: player, club: club, competition_season: cs) do |ps|
-    ps.overall_rating = overall_rating
-  end
+  puts = "Creating PlayerSeasonStat for #{player.known_as} at #{club.name}"
+  PlayerSeasonStat.find_or_create_by!(player:, club:, competition_season: cs)
 end
 
 # -------------------------------------------------------------------------
