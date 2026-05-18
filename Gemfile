@@ -4,6 +4,7 @@ ruby "3.4.9"
 gem "rails",           "~> 8.0"
 gem "pg",              "~> 1.5"
 gem "puma",            ">= 5.0"
+gem "csv"                             # For CSV parsing in seeds.rb
 gem "propshaft"                        # Asset pipeline Rails 8
 gem "importmap-rails"                  # JS via importmap (no Node)
 gem "turbo-rails"                      # Hotwire Turbo
