@@ -1,0 +1,95 @@
+# ==============================================================================
+# config/database.yml
+# ==============================================================================
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
+  password: <%= ENV.fetch("POSTGRES_PASSWORD", "") %>
+  host:     <%= ENV.fetch("POSTGRES_HOST", "localhost") %>
+
+development:
+  <<: *default
+  database: pcfutbol_development
+
+test:
+  <<: *default
+  database: pcfutbol_test
+
+production:
+  <<: *default
+  database: pcfutbol_production
+  username: pcfutbol
+  password: <%= ENV["PCFUTBOL_DATABASE_PASSWORD"] %>
+
+---
+# ==============================================================================
+# config/importmap.rb
+# ==============================================================================
+# Pin npm packages by running ./bin/importmap
+
+pin "application"
+pin "@hotwire/turbo-rails", to: "turbo.min.js"
+pin "@hotwire/stimulus",    to: "stimulus.min.js"
+pin "@hotwire/stimulus-loading", to: "stimulus-loading.js"
+pin_all_from "app/javascript/controllers", under: "controllers"
+
+---
+# ==============================================================================
+# app/javascript/application.js
+# ==============================================================================
+import "@hotwire/turbo-rails"
+import "controllers"
+
+---
+# ==============================================================================
+# app/javascript/controllers/index.js
+# ==============================================================================
+import { application } from "controllers/application"
+
+import MatchPlaybackController from "controllers/match_playback_controller"
+application.register("match-playback", MatchPlaybackController)
+
+import NavigationController from "controllers/navigation_controller"
+application.register("navigation", NavigationController)
+
+import SquadPanelController from "controllers/squad_panel_controller"
+application.register("squad-panel", SquadPanelController)
+
+---
+# ==============================================================================
+# app/javascript/controllers/application.js
+# ==============================================================================
+import { Application } from "@hotwire/stimulus"
+
+const application = Application.start()
+application.debug = false
+window.Stimulus   = application
+
+export { application }
+
+---
+# ==============================================================================
+# config/solid_queue.yml  (Rails 8 Solid Queue config)
+# ==============================================================================
+default: &default
+  dispatchers:
+    - polling_interval: 1
+      batch_size: 500
+  workers:
+    - queues: "*"
+      threads: 3
+      polling_interval: 0.1
+      processes: 1
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+  workers:
+    - queues: "*"
+      threads: 5
+      polling_interval: 0.1
+      processes: 2

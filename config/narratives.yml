@@ -1,0 +1,211 @@
+build_up:
+  - "%{carrier} combina con los suyos y sale desde atrás."
+  - "%{carrier} controla y da el pase de salida."
+  - "Buena salida de %{team}: %{carrier} desde la defensa."
+  - "%{carrier} lanza el balón hacia el área rival."
+
+long_ball:
+  - "%{carrier} lanza el balón largo buscando la espalda de la defensa."
+  - "Pelotazo de %{carrier} para sorprender al rival."
+  - "%{carrier} lanza el balón largo desde la defensa."
+  - "%{carrier} busca el espacio con un lanzamiento largo."
+
+gk_kick:
+  - "El portero %{carrier} saca largo buscando a los delanteros."
+  - "%{carrier} golpea hacia el área contraria."
+  - "El portero %{carrier} lanza el balón hacia el frente."
+  - "%{carrier} saca el balón desde la portería."
+
+advance:
+  - "%{carrier} avanza hacia el área rival con el balón."
+  - "%{carrier} supera la línea media y entra en terreno peligroso."
+  - "%{carrier} se interna y la defensa retrocede."
+  - "%{carrier} avanza con el balón hacia el área."
+
+back_pass:
+  - "%{carrier} aguanta la presión y devuelve."
+  - "%{carrier} recicla la posesión hacia atrás."
+  - "%{carrier} pasa el balón hacia atrás."
+  - "%{carrier} mantiene la posesión con un pase atrás."
+
+lose_ball_tackle:
+  - "%{tackler} entra con dureza y le roba el balón a %{carrier}. ¡Recuperación!"
+  - "Gran entrada de %{tackler} para desposeer a %{carrier}."
+  - "%{tackler} gana el duelo a %{carrier} y corta el ataque."
+  - "%{tackler} desposee a %{carrier} con una buena entrada."
+  - "%{tackler} recupera el balón tras desposeer a %{carrier}."
+  - "%{tackler} gana el duelo y recupera el balón."
+
+lose_ball_interception:
+  - "%{tackler} intercepta el pase de %{carrier}. Cambio de posesión."
+  - "%{tackler} lee la jugada y corta el intento de %{carrier}."
+  - "%{tackler} intercepta el pase de %{carrier} y recupera el balón."
+  - "%{tackler} corta el pase de %{carrier} con éxito."
+  - "%{tackler} intercepta el pase y recupera el balón."
+  - "%{tackler} lee la jugada y recupera el balón."
+  - "%{tackler} intercepta el pase de %{carrier} y recupera el balón."
+  - "%{tackler} corta el pase de %{carrier} con éxito."
+
+lose_ball_out:
+  - "%{carrier} no puede controlar y el balón sale por la línea."
+  - "%{carrier} pierde la pugna y el balón rueda fuera."
+  - "%{carrier} pierde el balón y sale por la línea lateral."
+  - "%{carrier} pierde el control y el balón se va fuera."
+
+dribble_success:
+  - "%{carrier} encara a %{tackler} y lo supera con un recorte. ¡Magia!"
+  - "%{carrier} se va de %{tackler} por velocidad. ¡Peligro!"
+  - "%{carrier} supera a %{tackler} con un buen regate."
+  - "%{carrier} logra superar a %{tackler} con habilidad."
+  - "%{carrier} supera a %{tackler} con destreza."
+  - "%{carrier} evita a %{tackler} con un buen movimiento."
+  - "%{carrier} supera a %{tackler} con un buen regate."
+  - "%{carrier} logra superar a %{tackler} con habilidad."
+
+dribble_fail:
+  - "%{carrier} intenta el regate ante %{tackler} pero se lo lleva el defensor."
+  - "%{tackler} frena en seco el intento de %{carrier}."
+  - "%{carrier} falla el regate ante %{tackler} y pierde el balón."
+  - "%{tackler} bloquea el intento de %{carrier} con éxito."
+  - "%{carrier} intenta el regate pero %{tackler} lo detiene."
+  - "%{tackler} impide el regate de %{carrier} con éxito."
+  - "%{carrier} falla el regate ante %{tackler} y pierde el balón."
+  - "%{tackler} bloquea el intento de %{carrier} con éxito."
+
+foul_won:
+  - "%{carrier} provoca la falta de %{tackler}. Balón parado."
+  - "Falta sobre %{carrier} cometida por %{tackler}."
+  - "%{carrier} provoca una falta en el área."
+  - "%{carrier} intenta una jugada y provoca la falta."
+  - "%{carrier} provoca una falta con un buen movimiento."
+  - "%{carrier} crea una oportunidad y provoca la falta."
+  - "%{carrier} provoca una falta en el área."
+  - "%{carrier} intenta una jugada y provoca la falta."
+
+shot_on_target:
+  - "%{carrier} dispara con potencia y %{keeper} tiene que emplearse."
+  - "Remate de %{carrier} que %{keeper} desvía a córner."
+  - "%{carrier} prueba desde fuera y %{keeper} responde."
+  - "%{carrier} dispara con fuerza y %{keeper} se mueve."
+
+shot_off_target:
+  - "%{carrier} dispara pero se va por encima del larguero."
+  - "El intento de %{carrier} no encuentra portería."
+  - "Disparo de %{carrier} que se marcha al lateral."
+  - "%{carrier} dispara pero el balón se va por fuera."
+
+big_chance_missed:
+  - "¡OCASIÓN CLARA! %{carrier} solo ante %{keeper} pero manda el balón fuera."
+  - "¡%{carrier} mano a mano con el portero y lo manda al palo!"
+  - "%{carrier} tiene una gran oportunidad pero falla."
+  - "%{carrier} falla la ocasión clara ante %{keeper}."
+
+goal:
+  - "⚽ ¡¡GOOOOL!! %{carrier} bate a %{keeper}. Asistencia de %{assister}. (%{score})"
+  - "⚽ ¡¡GOOOL DE %{carrier}!! El balón entra por la escuadra. (%{assister} con la asistencia) (%{score})"
+  - "⚽ ¡¡TANTO!! %{carrier} no perdona. Pase de %{assister}. (%{score})"
+  - "⚽ ¡¡GOL DE %{carrier}!! Gran definición con asistencia de %{assister}. (%{score})"
+
+goal_no_assist:
+  - "⚽ ¡¡GOOOOL!! %{carrier} resuelve solo ante %{keeper}. (%{score})"
+  - "⚽ ¡¡GOOOL DE %{carrier}!! El portero no puede hacer nada. (%{score})"
+  - "⚽ ¡¡TANTO DE %{carrier}!! Gran definición. (%{score})"
+  - "⚽ ¡¡GOOOOL DE %{carrier}!! Definición perfecta sin asistencia. (%{score})"
+
+own_goal:
+  - "⚽ ¡¡GOL EN PROPIA META!! %{carrier} manda el balón a su red."
+  - "⚽ ¡¡GOL EN PROPIA META!! %{carrier} comete el error."
+  - "⚽ ¡¡GOOOOL DE %{carrier}!! En propia meta. ¡Qué vergüenza!"
+  - "⚽ ¡¡GOL EN PROPIA META!! %{carrier} falla el pase."
+
+cross_saved:
+  - "Centro de %{assister}, remate de %{carrier} que %{keeper} detiene."
+  - "Centro de %{assister} que %{carrier} intenta rematar pero %{keeper} lo detiene."
+  - "Centro de %{assister} que %{carrier} falla el remate."
+  - "Centro de %{assister} que %{carrier} intenta con %{keeper} en la portería."
+
+cross_clearance:
+  - "Centro de %{assister} que %{tackler} saca con la cabeza. Córner."
+  - "Centro de %{assister} que %{tackler} despeja con la cabeza."
+  - "Centro de %{assister} que %{tackler} saca con la cabeza."
+  - "Centro de %{assister} que se despeja con cabeza."
+
+yellow_card:
+  - "🟨 Tarjeta amarilla para %{carrier} (%{team})."
+  - "🟨 %{carrier} ve la amarilla por protestar."
+  - "🟨 Amonestación para %{carrier} (%{team})."
+  - "🟨 %{carrier} recibe tarjeta amarilla."
+  - "🟨 %{carrier} es amonestado por %{team}."
+  - "🟨 %{carrier} recibe tarjeta por comportamiento."
+  - "🟨 %{carrier} recibe tarjeta amarilla."
+
+red_card:
+  - "🟥 ¡¡TARJETA ROJA para %{carrier}!! %{team} se queda con diez."
+  - "🟥 Roja directa para %{carrier} (%{team})."
+  - "🟥 %{carrier} recibe tarjeta roja."
+  - "🟥 %{carrier} es expulsado por %{team}."
+  - "🟥 %{carrier} recibe roja por %{team}."
+  - "🟥 %{carrier} es expulsado tras recibir tarjeta roja."
+  - "🟥 %{carrier} recibe tarjeta roja."
+  - "🟥 %{carrier} es expulsado por %{team}."
+
+yellow_red:
+  - "🟥 ¡¡DOBLE AMARILLA = ROJA para %{carrier}!! Se va al vestuario."
+  - "🟥 %{carrier} recibe doble amarilla y roja."
+  - "🟥 %{carrier} es expulsado por doble amarilla."
+  - "🟥 %{carrier} recibe doble amarilla y es expulsado."
+  - "🟥 %{carrier} recibe dos tarjetas amarillas y roja."
+  - "🟥 %{carrier} se va tras recibir doble amarilla."
+  - "🟥 %{carrier} recibe doble amarilla y roja."
+  - "🟥 %{carrier} es expulsado por doble amarilla."
+  - "🟥 %{carrier} se va tras recibir doble amarilla."
+
+injury:
+  - "🚑 %{carrier} se duele en el suelo. No puede continuar."
+  - "🚑 Lesión de %{carrier}. Cambio obligado."
+  - "🚑 %{carrier} sufre una lesión y sale del campo."
+  - "🚑 %{carrier} se retira por lesión."
+  - "🚑 %{carrier} sufre una lesión grave."
+  - "🚑 %{carrier} es retirado por lesión."
+  - "🚑 %{carrier} sufre una lesión y sale del campo."
+  - "🚑 %{carrier} se retira por lesión."
+
+substitution:
+  - "🔄 %{carrier} entra en sustitución de %{tackler}. Piernas frescas."
+  - "🔄 Cambio en %{team}: sale %{tackler}, entra %{carrier}."
+  - "🔄 %{carrier} entra en el campo en lugar de %{tackler}."
+  - "🔄 %{carrier} reemplaza a %{tackler} en el equipo %{team}."
+  - "🔄 %{carrier} entra como sustituto de %{tackler}."
+  - "🔄 %{tackler} sale, %{carrier} entra en %{team}."
+  - "🔄 %{carrier} entra en el campo en lugar de %{tackler}."
+  - "🔄 %{carrier} reemplaza a %{tackler} en el equipo %{team}."
+
+long_shot_spot:
+  - "%{carrier} ve al portero %{keeper} muy adelantado y no lo duda..."
+  - "%{carrier} observa que %{keeper} está fuera de su área. ¡Va a intentarlo desde el centro!"
+  - "%{carrier} coge el balón en el mediocampo y mira la posición de %{keeper}..."
+  - "%{carrier} se prepara para un disparo desde el centro del campo."
+
+long_shot_goal:
+  - "⚽ ¡¡¡INCREÍBLE!!! %{carrier} marca desde el centro del campo. ¡%{keeper} completamente sorprendido! ¡GOL HISTÓRICO!"
+  - "⚽ ¡¡¡GOL DESDE EL MEDIO DEL CAMPO!!! %{carrier} lo intenta y el balón entra. ¡%{keeper} no llega!"
+  - "⚽ ¡¡GOLAZO ESPECTACULAR DE %{carrier}!!! Disparo desde 50 metros, %{keeper} retrocede pero no llega."
+  - "⚽ ¡¡GOL DESDE LA DISTANCIA!!! %{carrier} marca desde el centro del campo."
+
+long_shot_saved_scramble:
+  - "%{keeper} reacciona tarde pero llega a despejar el disparo de %{carrier}. ¡Qué susto!"
+  - "%{keeper} corre hacia su portería y consigue desviar el balón de %{carrier} a córner. ¡Salvada increíble!"
+  - "%{keeper} se mueve rápido y desvía el disparo de %{carrier}."
+  - "%{keeper} intenta desviar el disparo de %{carrier} con éxito."
+
+long_shot_post:
+  - "¡AL PALO! El disparo de %{carrier} desde el centro golpea el larguero. %{keeper} estaba vendido."
+  - "¡MADERA! %{carrier} lo intenta desde lejos y el balón se estrella en el palo."
+  - "%{carrier} dispara desde el centro y el balón golpea el palo."
+  - "¡PALO! %{carrier} falla el disparo desde el centro."
+
+long_shot_off_target:
+  - "El disparo lejano de %{carrier} se va por encima del larguero. %{keeper} casi no se mueve."
+  - "Demasiado alto el intento de %{carrier} desde el centro del campo."
+  - "%{carrier} dispara desde lejos y el balón se va por encima."
+  - "El disparo de %{carrier} se va por encima del larguero."

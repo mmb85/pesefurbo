@@ -1,0 +1,20 @@
+<h1>Matches</h1>
+
+<% if @rounds.any? %>
+  <% @rounds.each do |round, matches| %>
+    <h2>Round <%= round %></h2>
+    <ul>
+      <% matches.each do |match| %>
+        <li>
+          <%= link_to "#{match.home_club.name} vs #{match.away_club.name}", match_path(match) %>
+          <span><%= match.status %></span>
+          <% if match.status == "finished" %>
+            <span><%= match.home_goals %> - <%= match.away_goals %></span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+<% else %>
+  <p>No matches available.</p>
+<% end %>

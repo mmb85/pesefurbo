@@ -1,0 +1,73 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: pcfutbol_db
+    environment:
+      POSTGRES_USER: pcfutbol_user
+      POSTGRES_PASSWORD: pcfutbol_password
+      POSTGRES_DB: pcfutbol_development
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pcfutbol_user -d pcfutbol_development"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: pcfutbol_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: pcfutbol_web
+    command: bundle exec rails server -b 0.0.0.0
+    ports:
+      - "3000:3000"
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgresql://pcfutbol_user:pcfutbol_password@db:5432/pcfutbol_development
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
+  solid_queue:
+    build: .
+    container_name: pcfutbol_queue
+    # Use ruby to run the Rails 8 standard `bin/jobs` executable
+    entrypoint: ["ruby", "bin/jobs"]
+    command: []
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgresql://pcfutbol_user:pcfutbol_password@db:5432/pcfutbol_development
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:
+  bundle_cache:

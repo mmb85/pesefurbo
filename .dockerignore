@@ -1,0 +1,42 @@
+# Dependencies
+.bundle/
+vendor/bundle/
+
+# Logs
+log/
+*.log
+
+# Temporary files
+tmp/
+coverage/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# Node (if any)
+node_modules/
+yarn-error.log
+
+# Ruby cache
+.ruby-cache/
+
+# Database
+db/*.sqlite3
+db/*.sqlite3-journal
+
+# Assets
+public/assets/

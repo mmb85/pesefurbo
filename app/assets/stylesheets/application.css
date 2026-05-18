@@ -1,0 +1,437 @@
+/* app/assets/stylesheets/application.css
+   PC Fútbol · Retro Football Manager
+   Win95 / CRT aesthetic
+   ========================================================================== */
+
+/* ── Google Fonts (loaded in layout) ──────────────────────────────────────── */
+/* Press Start 2P  → .font-pixel  (headings, logo, scores)                   */
+/* VT323           → .font-vt323  (body text, menus, narration)              */
+/* Share Tech Mono → .font-mono   (stats, tables, numbers)                   */
+
+/* ── CSS Custom Properties ────────────────────────────────────────────────── */
+:root {
+  --bg:          #008080;   /* Win95 teal desktop */
+  --panel:       #0d1528;
+  --border-l:    #6688bb;   /* Win95 bevel light */
+  --border-d:    #001040;   /* Win95 bevel dark  */
+  --win-title:   #000080;   /* Win95 title bar   */
+  --crt-green:   #00ff88;
+  --amber:       #ffcc00;
+  --red:         #ff4466;
+  --blue:        #44aaff;
+  --text:        #c8e0ff;
+  --dim:         #3a5878;
+  --border:      #1a3060;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── CRT overlay ──────────────────────────────────────────────────────────── */
+.crt-overlay {
+  position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,.12) 0px, rgba(0,0,0,.12) 1px,
+    transparent 1px, transparent 3px
+  );
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 9998;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.55) 100%);
+}
+
+/* ── Typography helpers ───────────────────────────────────────────────────── */
+.font-pixel { font-family: 'Press Start 2P', monospace; }
+.font-vt323 { font-family: 'VT323', monospace; }
+.font-mono  { font-family: 'Share Tech Mono', monospace; }
+.text-crt-green { color: var(--crt-green); }
+.text-amber     { color: var(--amber); }
+.text-dim       { color: var(--dim); }
+.text-red       { color: var(--red); }
+.text-blue      { color: var(--blue); }
+
+/* ── Win95 Taskbar ────────────────────────────────────────────────────────── */
+.win-taskbar {
+  background: linear-gradient(180deg, #1a2d5a 0%, #0d1a3a 100%);
+  border-bottom: 2px solid var(--crt-green);
+  padding: 6px 14px;
+  box-shadow: 0 0 20px rgba(0,255,136,.12);
+  position: sticky; top: 0; z-index: 200;
+}
+.win-logo {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--amber);
+  text-shadow: 0 0 10px rgba(255,204,0,.6), 2px 2px 0 #000;
+}
+.win-menu-item {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  padding: 2px 10px;
+  color: var(--text);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all .08s;
+}
+.win-menu-item:hover, .win-menu-item.active {
+  background: var(--win-title);
+  border-color: var(--border-l);
+  color: #fff;
+}
+.win-clock {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--amber);
+  letter-spacing: 1px;
+}
+
+/* ── Win95 Panel (window) ─────────────────────────────────────────────────── */
+.win-panel {
+  background: #0b1220;
+  border: 2px solid;
+  border-color: var(--border-l) var(--border-d) var(--border-d) var(--border-l);
+  overflow: hidden;
+  animation: winFadeIn .25s ease forwards;
+  opacity: 0;
+}
+@keyframes winFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.win-titlebar {
+  background: linear-gradient(90deg, var(--win-title) 0%, #1e3299 100%);
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'VT323', monospace;
+  font-size: 15px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+  user-select: none;
+}
+.win-titlebar-left { display: flex; align-items: center; gap: 6px; }
+.win-btns { display: flex; gap: 2px; }
+.wbtn {
+  width: 14px; height: 14px;
+  background: #a0a0b0;
+  border: 1px solid;
+  border-color: #fff #606070 #606070 #fff;
+  font-size: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: #000; cursor: pointer;
+}
+
+/* ── Tab bar ──────────────────────────────────────────────────────────────── */
+.win-tabbar {
+  display: flex;
+  gap: 2px;
+  background: #0d1528;
+  border-bottom: 2px solid var(--border);
+  padding: 4px 4px 0;
+}
+.win-tab {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  padding: 4px 14px 2px;
+  background: #060d1a;
+  border: 1px solid var(--border-l);
+  border-bottom: none;
+  color: var(--dim);
+  cursor: pointer;
+  transition: all .1s;
+}
+.win-tab.tab-active {
+  background: #0b1220;
+  color: var(--crt-green);
+  border-color: var(--crt-green);
+  text-shadow: 0 0 8px var(--crt-green);
+}
+.win-tab:hover:not(.tab-active) { color: var(--text); }
+
+/* ── Scoreboard ───────────────────────────────────────────────────────────── */
+.scoreboard-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #000;
+  border: 2px solid var(--amber);
+  padding: 12px;
+  box-shadow: 0 0 18px rgba(255,204,0,.18);
+}
+.score-digits {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 32px;
+  color: var(--amber);
+  text-shadow: 0 0 16px rgba(255,204,0,.8), 2px 2px 0 #000;
+  letter-spacing: 6px;
+  display: block;
+}
+.sc-min { font-family: 'Press Start 2P', monospace; font-size: 9px; color: var(--red); display: block; }
+.sc-min.live { animation: blink 1s step-end infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* Goal flash animation */
+.goal-flash { animation: goalFlash 1.2s ease; }
+@keyframes goalFlash {
+  0%   { box-shadow: 0 0 0 0 rgba(255,204,0,0); }
+  30%  { box-shadow: 0 0 40px 20px rgba(255,204,0,.6); }
+  100% { box-shadow: 0 0 0 0 rgba(255,204,0,0); }
+}
+.score-bump { animation: bump .5s ease; }
+@keyframes bump {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.25); color: #fff; }
+}
+
+/* ── Zone indicator ───────────────────────────────────────────────────────── */
+.zone-bar {
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+}
+.zone-seg {
+  flex: 1;
+  text-align: center;
+  padding: 3px 2px;
+  color: var(--dim);
+  border-right: 1px solid var(--border);
+  transition: all .3s;
+}
+.zone-seg:last-child { border-right: none; }
+.zone-seg.active-home { background: #001a08; color: var(--crt-green); font-weight: bold; }
+.zone-seg.active-away { background: #00081a; color: var(--blue); font-weight: bold; }
+
+/* ── Narration feed ───────────────────────────────────────────────────────── */
+.narration-feed { scrollbar-width: thin; scrollbar-color: var(--border) #000; }
+.narration-feed::-webkit-scrollbar { width: 6px; }
+.narration-feed::-webkit-scrollbar-track { background: #000; }
+.narration-feed::-webkit-scrollbar-thumb { background: var(--border); }
+
+.nar-event {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid #080e1e;
+  animation: narIn .35s ease;
+  line-height: 1.4;
+}
+@keyframes narIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+.nar-min { color: var(--dim); width: 34px; flex-shrink: 0; font-size: 12px; }
+.nar-text { flex: 1; font-size: 12px; }
+
+.ev-goal     .nar-text { color: var(--amber); }
+.ev-card     .nar-text { color: var(--red); }
+.ev-sub      .nar-text { color: #88ffcc; }
+.ev-injury   .nar-text { color: #ffaa44; }
+.ev-longshot .nar-text { color: #ff88ff; }
+.ev-transition .nar-text { color: #8899bb; }
+.ev-system   .nar-text { color: var(--dim); font-style: italic; }
+.ev-normal   .nar-text { color: var(--text); }
+
+/* ── Stats bars ───────────────────────────────────────────────────────────── */
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.stat-lbl { width: 72px; color: var(--dim); font-size: 11px; text-transform: uppercase; flex-shrink: 0; }
+.stat-bar { flex: 1; height: 8px; background: #071020; border: 1px solid var(--border); overflow: hidden; }
+.stat-fill { height: 100%; background: linear-gradient(90deg, var(--crt-green), var(--amber)); box-shadow: 0 0 5px var(--crt-green); transition: width 1s ease; }
+.stat-val { width: 24px; text-align: right; color: var(--amber); font-size: 13px; }
+
+/* ── Stats comparison (partido stats panel) ───────────────────────────────── */
+.win-stats-bar .stat-cell { padding: 6px 4px; }
+.win-stats-bar .val { font-size: 18px; display: block; }
+.win-stats-bar .lbl { font-size: 10px; color: var(--dim); display: block; }
+
+.stat-comparison-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 0; border-bottom: 1px solid var(--border);
+  font-family: 'Share Tech Mono', monospace; font-size: 14px;
+}
+.stat-home  { color: #ff6666; width: 60px; text-align: right; }
+.stat-label { color: var(--dim); font-size: 11px; text-align: center; flex: 1; text-transform: uppercase; }
+.stat-away  { color: #6699ff; width: 60px; text-align: left; }
+
+/* ── Lineup rows ──────────────────────────────────────────────────────────── */
+.lineup-row {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 8px; border-bottom: 1px solid #080e1e;
+  font-size: 15px;
+}
+.lineup-row.bench { opacity: .55; }
+.sh-num  { color: var(--dim); width: 22px; text-align: right; font-size: 12px; }
+.sh-name { flex: 1; }
+.sh-pos  { font-size: 11px; padding: 1px 4px; font-family: 'Share Tech Mono', monospace; }
+.pos-GK  { background: #1a0d00; color: #ffaa00; }
+.pos-DF  { background: #00101a; color: var(--blue); }
+.pos-MC  { background: #001200; color: var(--crt-green); }
+.pos-DL  { background: #180000; color: var(--red); }
+
+/* ── Squad list (clubs#show) ──────────────────────────────────────────────── */
+.squad-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px; border-bottom: 1px solid #0a1428;
+  cursor: pointer; transition: background .1s;
+}
+.squad-item:hover { background: #0d1e3a; }
+.squad-item.selected { background: #001060; border-left: 3px solid var(--crt-green); }
+
+/* ── Standings table ──────────────────────────────────────────────────────── */
+.liga-table { width: 100%; border-collapse: collapse; font-family: 'Share Tech Mono', monospace; font-size: 13px; }
+.liga-table th {
+  color: var(--dim); font-size: 11px; padding: 4px 3px; text-align: center;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: #0d1528; z-index: 2;
+}
+.liga-table th:nth-child(2) { text-align: left; }
+.liga-table td { padding: 5px 3px; text-align: center; border-bottom: 1px solid #080f1e; }
+.liga-table td:nth-child(2) { text-align: left; font-size: 14px; }
+.liga-table tr:hover td { background: #0d1e3a; }
+.liga-table tr.my-club td { background: #00104a; }
+.liga-table tr.my-club td:nth-child(2) { color: var(--crt-green); }
+.liga-table .pts { color: var(--amber); font-size: 15px; font-weight: bold; }
+.zone-c td { border-left: 3px solid var(--crt-green); }
+.zone-e td { border-left: 3px solid var(--amber); }
+.zone-r td { border-left: 3px solid var(--red); }
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.btn-primary {
+  background: linear-gradient(180deg, #1a3a6a 0%, #0d2040 100%);
+  border: 2px solid;
+  border-color: var(--border-l) var(--border-d) var(--border-d) var(--border-l);
+  color: var(--crt-green);
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-shadow: 0 0 8px var(--crt-green);
+  transition: all .1s;
+  text-decoration: none; display: inline-block; text-align: center;
+}
+.btn-primary:hover { background: linear-gradient(180deg, #204a8a 0%, #132850 100%); box-shadow: 0 0 12px rgba(0,255,136,.3); }
+.btn-primary:active { border-color: var(--border-d) var(--border-l) var(--border-l) var(--border-d); transform: translateY(1px); }
+
+.btn-secondary {
+  background: #060d1a;
+  border: 2px solid;
+  border-color: var(--border-l) var(--border-d) var(--border-d) var(--border-l);
+  color: var(--text);
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  padding: 8px 16px;
+  cursor: pointer; transition: all .1s;
+  text-decoration: none; display: inline-block; text-align: center;
+}
+.btn-secondary:hover { background: #0a1830; }
+.btn-secondary:active { border-color: var(--border-d) var(--border-l) var(--border-l) var(--border-d); }
+
+/* ── Win95 notice / flash ─────────────────────────────────────────────────── */
+.win-notice { animation: narIn .3s ease; }
+.win-ht-banner {
+  font-family: 'Press Start 2P', monospace; font-size: 10px;
+  color: var(--amber); text-align: center; padding: 8px;
+  border: 2px solid var(--amber);
+  animation: blink 1s step-end infinite;
+}
+.win-final-banner {
+  background: linear-gradient(135deg, #001040, #000820);
+  border: 2px solid var(--crt-green);
+  padding: 14px; text-align: center;
+}
+
+/* ── Mobile bottom nav ────────────────────────────────────────────────────── */
+.mobile-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: calc(58px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: #06090f;
+  border-top: 2px solid var(--border);
+  display: flex; z-index: 100;
+}
+.mobile-nav-btn {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px;
+  background: none; border: none;
+  color: var(--dim); cursor: pointer; padding: 6px 0 4px;
+  text-decoration: none; transition: color .15s;
+  position: relative;
+}
+.mobile-nav-btn.active { color: var(--crt-green); }
+.mobile-nav-btn.active::after {
+  content: ''; position: absolute; top: 0; left: 20%; right: 20%;
+  height: 2px; background: var(--crt-green); box-shadow: 0 0 8px var(--crt-green);
+}
+.nav-icon { font-size: 20px; line-height: 1; }
+.nav-label { font-family: 'Press Start 2P', monospace; font-size: 6px; letter-spacing: .5px; }
+
+/* ── LED status indicator ─────────────────────────────────────────────────── */
+.led {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--crt-green); box-shadow: 0 0 6px var(--crt-green);
+  animation: ledPulse 2s ease-in-out infinite;
+  display: inline-block; vertical-align: middle; margin-right: 4px;
+}
+@keyframes ledPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ── Scrollbars ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #050a14; border: 1px solid #0d1a30; }
+::-webkit-scrollbar-thumb { background: #1a3060; border: 1px solid #2a4080; }
+::-webkit-scrollbar-thumb:hover { background: #2a4080; }
+
+/* ── Win95 desktop area ───────────────────────────────────────────────────── */
+.win-desktop-area { max-width: 1100px; margin: 0 auto; }
+.app-content { padding: 10px; }
+
+/* ── Position pills ───────────────────────────────────────────────────────── */
+.pos-pill { font-size: 11px; padding: 1px 5px; border-radius: 2px; font-family: 'Share Tech Mono', monospace; }
+
+/* ── Matches index ────────────────────────────────────────────────────────── */
+.match-row {
+  display: flex; align-items: center; padding: 8px 10px;
+  border-bottom: 1px solid #0a1428; gap: 8px;
+  font-family: 'Share Tech Mono', monospace; font-size: 14px;
+  cursor: pointer; transition: background .1s; text-decoration: none; color: var(--text);
+}
+.match-row:hover { background: #0d1e3a; }
+.match-row.live { background: #001a0e; }
+.mrow-home { flex: 1; text-align: right; }
+.mrow-score { width: 60px; text-align: center; font-size: 18px; color: var(--amber); }
+.mrow-away { flex: 1; text-align: left; }
+.status-badge {
+  font-family: 'Press Start 2P', monospace; font-size: 7px;
+  padding: 2px 5px; border-radius: 2px;
+}
+.status-scheduled { background: #001030; color: var(--dim); border: 1px solid var(--dim); }
+.status-simulated { background: #001a0e; color: var(--crt-green); border: 1px solid var(--crt-green); }
+.status-finished  { background: #001a0e; color: var(--crt-green); border: 1px solid var(--crt-green); }
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .score-digits { font-size: 24px; letter-spacing: 4px; }
+  .win-titlebar { font-size: 13px; }
+  .app-content  { padding: 6px; }
+}

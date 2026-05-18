@@ -1,0 +1,34 @@
+<section class="game-mode-selection p-6">
+  <h1>Selecciona modo y club</h1>
+  <p class="mb-4">Elige entre modo de un solo jugador o multijugador, luego selecciona un club para empezar la liga.</p>
+
+  <%= form_with url: game_mode_path, method: :post, local: true do %>
+    <div class="field mb-4">
+      <label class="font-semibold block mb-2">Modo de juego</label>
+      <div class="flex gap-4 flex-wrap">
+        <label class="inline-flex items-center gap-2">
+          <%= radio_button_tag :game_mode, "single", current_game_mode == "single" %>
+          <span>Un jugador</span>
+        </label>
+        <label class="inline-flex items-center gap-2">
+          <%= radio_button_tag :game_mode, "multi", current_game_mode == "multi" %>
+          <span>Multijugador</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field mb-4">
+      <label class="font-semibold block mb-2" for="club_id">Selecciona tu club</label>
+      <%= select_tag :club_id, options_from_collection_for_select(@clubs, :id, :name, current_club&.id), prompt: "Elige un club", class: "w-full p-2 rounded border" %>
+    </div>
+
+    <div class="actions">
+      <%= submit_tag "Comenzar liga", class: "px-4 py-2 rounded bg-emerald-500 text-black font-bold" %>
+    </div>
+  <% end %>
+
+  <div class="mt-6 text-sm text-slate-300">
+    <p>En <strong>modo un jugador</strong>, controlarás tu club y el resto serán rivales gestionados por la aplicación.</p>
+    <p>En <strong>modo multijugador</strong>, podrás seleccionar una plantilla y competir contra otros managers.</p>
+  </div>
+</section>

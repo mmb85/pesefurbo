@@ -1,0 +1,91 @@
+<%# app/views/layouts/application.html.erb %>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#008080">
+  <title>PC Fútbol · <%= content_for?(:title) ? yield(:title) : "Retro Football Manager" %></title>
+
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%# Fonts %>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+</head>
+<body class="bg-teal-800 text-crt-green min-h-screen" data-controller="navigation">
+
+  <%# CRT scanlines overlay %>
+  <div class="crt-overlay" aria-hidden="true"></div>
+
+  <%# Desktop: Win95 taskbar top %>
+  <header class="win-taskbar hidden md:flex items-center justify-between px-4 py-1">
+    <div class="flex items-center gap-3">
+      <span class="win-logo font-pixel text-xs text-amber tracking-widest">
+        ⚽ PC <span class="text-crt-green">FÚTBOL</span>
+      </span>
+      <nav class="flex gap-1 ml-4">
+        <%= link_to "Partidos", matches_path,
+          class: "win-menu-item #{current_page?(matches_path) ? 'active' : ''}" %>
+        <%= link_to "Liga", clubs_path,
+          class: "win-menu-item #{current_page?(clubs_path) ? 'active' : ''}" %>
+      </nav>
+    </div>
+    <div class="font-mono text-xs text-teal-300 flex gap-6 items-center">
+      <% if @current_season %>
+        <span>Temporada <b class="text-amber"><%= @current_season.name %></b></span>
+      <% end %>
+      <% if current_game_mode && current_club %>
+        <span>Modo: <b class="text-amber"><%= current_game_mode == 'single' ? 'Un jugador' : 'Multijugador' %></b></span>
+        <span>Club: <b class="text-amber"><%= current_club.short_name %></b></span>
+      <% end %>
+      <span class="win-clock" id="win-clock"></span>
+    </div>
+  </header>
+
+  <%# Flash messages %>
+  <% if notice %>
+    <div class="win-notice mx-4 mt-2 p-2 font-mono text-sm text-crt-green border border-crt-green bg-black">
+      ℹ️ <%= notice %>
+    </div>
+  <% end %>
+  <% if alert %>
+    <div class="win-notice mx-4 mt-2 p-2 font-mono text-sm text-red-400 border border-red-400 bg-black">
+      ⚠️ <%= alert %>
+    </div>
+  <% end %>
+
+  <%# Main content %>
+  <main class="app-content pb-20 md:pb-0">
+    <%= yield %>
+  </main>
+
+  <%# Mobile: bottom navigation %>
+  <nav class="mobile-nav md:hidden" role="navigation" aria-label="Navegación principal">
+    <%= link_to matches_path, class: "mobile-nav-btn #{current_page?(matches_path) ? 'active' : ''}" do %>
+      <span class="nav-icon">📺</span>
+      <span class="nav-label">Partidos</span>
+    <% end %>
+    <%= link_to clubs_path, class: "mobile-nav-btn #{current_page?(clubs_path) ? 'active' : ''}" do %>
+      <span class="nav-icon">🏆</span>
+      <span class="nav-label">Liga</span>
+    <% end %>
+  </nav>
+
+  <script>
+    // Win95 clock
+    function updateClock(){
+      const now = new Date();
+      const t = now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      const el = document.getElementById('win-clock');
+      if(el) el.textContent = t;
+    }
+    updateClock(); setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>
