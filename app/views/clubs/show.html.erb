@@ -1,24 +1,56 @@
-<h1><%= @club.name %></h1>
+<div class="win-desktop-area app-content">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
-<p>
-  <strong>Country:</strong> <%= @club.country.name %>
-</p>
+    <%# Club info panel %>
+    <div class="win-panel md:col-span-1">
+      <div class="win-titlebar">
+        <div class="win-titlebar-left">🏟️ <%= @club.short_name %></div>
+      </div>
+      <div class="p-4">
+        <div class="font-pixel text-xs text-amber mb-1"><%= @club.name %></div>
+        <div class="font-mono text-xs text-dim mb-3">
+          Fundado: <%= @club.founded_year || "—" %> · <%= @club.country.name %>
+        </div>
+        <% if @club.stadium %>
+          <div class="font-mono text-sm mb-1">🏟️ <%= @club.stadium.name %></div>
+          <div class="font-mono text-xs text-dim"><%= number_with_delimiter(@club.stadium.capacity) %> espectadores</div>
+        <% end %>
+        <% if @club_season %>
+          <div class="mt-4 border-t border-border pt-3">
+            <div class="font-mono text-xs text-dim mb-2">PRESUPUESTO</div>
+            <div class="font-vt323 text-lg text-crt-green">
+              <%= number_to_currency(@club_season.budget_total, unit: "€", precision: 0) %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
 
-<% if @club.stadium %>
-  <p>
-    <strong>Stadium:</strong> <%= @club.stadium.name %>
-  </p>
-<% end %>
-
-<h2>Squad</h2>
-<% if @squad.any? %>
-  <ul>
-    <% @squad.each do |contract| %>
-      <li><%= contract.player.known_as %> (#{contract.player.position})</li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>No players</p>
-<% end %>
-
-<%= link_to "Back to Clubs", clubs_path %>
+    <%# Squad panel %>
+    <div class="win-panel md:col-span-2">
+      <div class="win-titlebar">
+        <div class="win-titlebar-left">👕 PLANTILLA · <%= @club.short_name %></div>
+      </div>
+      <div class="p-1">
+        <% @squad.each do |contract| %>
+          <% p = contract.player %>
+          <div class="squad-item">
+            <span class="sh-num text-dim text-xs w-5 text-right">
+              <%= contract.squad_number || "—" %>
+            </span>
+            <span class="flex-1 font-vt323 text-base"><%= p.known_as %></span>
+            <span class="sh-pos pos-<%= p.position == 'GK' ? 'GK' :
+              %w[CB LB RB SW].include?(p.position) ? 'DF' :
+              %w[ST SS].include?(p.position) ? 'DL' : 'MC' %>">
+              <%= p.position %>
+            </span>
+            <span class="text-amber font-mono text-sm"><%= p.overall_rating %></span>
+            <% if contract.expiring_soon? %>
+              <span class="text-red text-xs font-mono">⚠ <%= p.contracts.active.first.expires_on.strftime("%m/%y") %></span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

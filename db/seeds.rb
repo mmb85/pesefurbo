@@ -240,7 +240,7 @@ schedule = generate_round_robin_schedule(clubs)
 
 # Create matches for the first 2 weeks only
 puts "\nCreating matches for first 2 weeks..."
-2.times do |week_idx|
+cs.rounds_total.times do |week_idx|
   week = weeks[week_idx]
   matchday = schedule[week_idx]
 

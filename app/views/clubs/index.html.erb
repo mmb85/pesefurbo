@@ -1,46 +1,66 @@
-<h1>Clubs</h1>
+<div class="win-desktop-area app-content">
+  <div class="win-panel">
+    <div class="win-titlebar">
+      <div class="win-titlebar-left">🏆 CLASIFICACIÓN — <%= @competition_season&.competition&.name %></div>
+    </div>
+    <div class="p-2">
 
-<% if current_club %>
-  <section class="mb-6 p-4 rounded border border-teal-400 bg-black/50">
-    <p class="mb-2"><strong>Modo:</strong> <%= current_game_mode == 'single' ? 'Un jugador' : 'Multijugador' %></p>
-    <p class="mb-2"><strong>Club seleccionado:</strong> <%= link_to current_club.name, club_path(current_club) %></p>
-    <p><%= link_to 'Cambiar modo o club', new_game_mode_path, class: 'underline text-amber' %></p>
-  </section>
-<% end %>
+      <div class="mb-3 flex gap-6" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--dim);">
+        <span style="border-left:3px solid var(--crt-green);padding-left:5px;">Champions League</span>
+        <span style="border-left:3px solid var(--amber);padding-left:5px;">UEFA</span>
+        <span style="border-left:3px solid var(--red);padding-left:5px;">Descenso</span>
+      </div>
 
-<% if @standings.any? %>
-  <table>
-    <thead>
-      <tr>
-        <th>Position</th>
-        <th>Club</th>
-        <th>Played</th>
-        <th>Won</th>
-        <th>Drawn</th>
-        <th>Lost</th>
-        <th>GF</th>
-        <th>GA</th>
-        <th>GD</th>
-        <th>Points</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @standings.each do |standing| %>
-        <tr>
-          <td><%= standing.position %></td>
-          <td><%= link_to standing.club_season.club.name, club_path(standing.club_season.club) %></td>
-          <td><%= standing.played %></td>
-          <td><%= standing.won %></td>
-          <td><%= standing.drawn %></td>
-          <td><%= standing.lost %></td>
-          <td><%= standing.goals_for %></td>
-          <td><%= standing.goals_against %></td>
-          <td><%= standing.goal_difference %></td>
-          <td><strong><%= standing.points %></strong></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <p>No standings available.</p>
-<% end %>
+      <div style="overflow-x:auto;">
+        <table class="liga-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Equipo</th>
+              <th>PJ</th>
+              <th>G</th>
+              <th>E</th>
+              <th>P</th>
+              <th>GF</th>
+              <th>GC</th>
+              <th>DG</th>
+              <th>Pts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @standings.each_with_index do |standing, idx| %>
+              <%
+                cs   = standing.club_season
+                club = cs.club
+                pos  = standing.position
+                zone_class = if pos <= 1 then "zone-c"
+                             elsif pos <= 4 then "zone-e"
+                             elsif pos >= (@standings.size - 2) then "zone-r"
+                             else "" end
+              %>
+              <tr class="<%= zone_class %> <%= club.is_player_club? ? 'my-club' : '' %>">
+                <td><%= pos %></td>
+                <td>
+                  <%= link_to club_path(club), class: "text-inherit no-underline hover:text-crt-green" do %>
+                    <%= club.abbr %>
+                  <% end %>
+                </td>
+                <td><%= standing.played %></td>
+                <td><%= standing.won %></td>
+                <td><%= standing.drawn %></td>
+                <td><%= standing.lost %></td>
+                <td><%= standing.goals_for %></td>
+                <td><%= standing.goals_against %></td>
+                <td class="<%= standing.goal_difference >= 0 ? 'text-crt-green' : 'text-red' %>">
+                  <%= standing.goal_difference > 0 ? "+#{standing.goal_difference}" : standing.goal_difference %>
+                </td>
+                <td class="pts"><%= standing.points %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
