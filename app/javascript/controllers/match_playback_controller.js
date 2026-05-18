@@ -32,7 +32,7 @@ export default class extends Controller {
 
   static values = {
     events:   { type: Array,   default: [] },
-    interval: { type: Number,  default: 2000 },
+    interval: { type: Number,  default: 1200 },
     autoplay: { type: Boolean, default: true }
   }
 
@@ -201,7 +201,7 @@ export default class extends Controller {
       el.textContent += fullText[i] || ""
       i++
       if (i >= fullText.length) clearInterval(iv)
-    }, 18)
+    }, 12)
   }
 
   showHalfTimeBanner() {

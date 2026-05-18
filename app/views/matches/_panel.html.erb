@@ -1,0 +1,96 @@
+<%# Partial: match panel. Expects local `match` %>
+<% has_match_events = match.match_events.exists? %>
+<% events_json = has_match_events ? match.events_payload.to_json : "[]" %>
+<div data-panel="partido" data-navigation-target="panel"
+     <% if has_match_events %>
+       data-controller="match-playback"
+       data-match-playback-events-value='<%= raw(events_json) %>'
+     <% end %>
+     data-match-playback-autoplay-value="<%= has_match_events %>"
+     data-match-playback-interval-value="1200">
+
+  <%# SCOREBOARD %>
+  <div class="win-panel mb-2" id="scoreboard">
+    <div class="win-titlebar">
+      <div class="win-titlebar-left">📺 PARTIDO EN CURSO · J.<%= match.round %></div>
+      <div class="win-btns"><span class="wbtn">_</span><span class="wbtn">□</span><span class="wbtn">✕</span></div>
+    </div>
+    <div class="p-3">
+      <div class="scoreboard-inner">
+        <div class="score-team text-center flex-1">
+          <span class="text-3xl block">🔴</span>
+          <span class="font-vt323 text-xl"><%= match.home_club.short_name %></span>
+        </div>
+        <div class="score-mid text-center flex-shrink-0">
+          <span class="score-digits font-pixel" id="sc-score">
+            <span data-match-playback-target="homeScore"><%= match.home_goals %></span>
+            <span class="text-dim mx-2">–</span>
+            <span data-match-playback-target="awayScore"><%= match.away_goals %></span>
+          </span>
+          <span class="sc-min font-pixel text-red block mt-1 live"
+                data-match-playback-target="minute">0'</span>
+          <span class="font-mono text-dim text-xs block mt-1">
+            <%= match.competition_season.competition.short_name %>
+          </span>
+        </div>
+        <div class="score-team text-center flex-1">
+          <span class="text-3xl block">🔵</span>
+          <span class="font-vt323 text-xl"><%= match.away_club.short_name %></span>
+        </div>
+      </div>
+
+      <%# Zone indicator %>
+      <div class="zone-bar mt-3" data-match-playback-target="zoneIndicator">
+        <%= ["home_defense","home_midfield","home_attack","away_attack","away_midfield","away_defense"].map do |z| %>
+          <span class="zone-seg" data-zone="<%= z %>">
+            <%= z.gsub("home_","L.").gsub("away_","V.").gsub("_"," ").upcase %>
+          </span>
+        <% end.join.html_safe %>
+      </div>
+    </div>
+  </div>
+
+  <%# Half time / Final banners %>
+  <div class="win-ht-banner hidden font-pixel text-amber text-center p-2 mb-2 border border-amber" id="ht-banner">
+    ⏸ DESCANSO — PRIMER TIEMPO FINALIZADO
+  </div>
+  <div class="win-final-banner hidden mb-2" id="final-banner">
+    <div class="font-pixel text-xs text-crt-green tracking-widest mb-2">⏱ PITIDO FINAL</div>
+    <div class="font-pixel text-3xl text-amber" data-final-score>
+      <%= match.simulated? ? match.score : "— – —" %>
+    </div>
+    <%= link_to "↩ Volver a partidos", matches_path, class: "btn-secondary mt-3 block text-center" %>
+  </div>
+
+  <%# (rest of panel like narration/feed and controls are intentionally omitted in partial for brevity) %>
+  <%# NARRATION FEED %>
+  <div class="win-panel mb-2">
+    <div class="win-titlebar">
+      <div class="win-titlebar-left">📻 NARRACIÓN EN DIRECTO</div>
+    </div>
+    <div class="narration-feed font-mono text-sm"
+         data-match-playback-target="feed"
+         style="height:280px;overflow-y:auto;padding:8px;background:#000;">
+      <% if match.simulated? || has_match_events %>
+        <div class="ev-system nar-event">
+          <span class="nar-min">0'</span>
+          <span class="nar-text">Bienvenido!</span>
+        </div>
+      <% else %>
+        <div class="ev-system nar-event">
+          <span class="nar-min">—</span>
+          <span class="nar-text">Partido pendiente de simular.</span>
+        </div>
+      <% end %>
+    </div>
+    <div class="p-2 flex gap-2">
+      <% if match.status == "scheduled" %>
+        <%= button_to "⚡ SIMULAR", simulate_match_path(match), method: :post, class: "btn-primary flex-1" %>
+      <% else %>
+        <button class="btn-secondary flex-1" data-action="click->match-playback#togglePause">⏸ PAUSA</button>
+        <button class="btn-secondary" data-action="click->match-playback#skipToEnd">⏩ FIN</button>
+      <% end %>
+      <%= link_to "↩ Partidos", matches_path, class: "btn-secondary" %>
+    </div>
+  </div>
+</div>

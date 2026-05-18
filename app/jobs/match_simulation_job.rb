@@ -29,11 +29,34 @@ class MatchSimulationJob < ApplicationJob
   private
 
   def broadcast_ready(match)
-    Turbo::StreamsChannel.broadcast_replace_to(
+    safe_broadcast(
+      "status",
       "match_#{match.id}_status",
-      target: "match_status_#{match.id}",
-      partial: "matches/status_badge",
+      "match_status_#{match.id}",
+      "matches/status_badge",
+      match
+    )
+
+    # Also replace the full match panel so viewers on the match page receive the
+    # updated DOM (including `data-match-playback-events-value`) and Stimulus can
+    # start playback without a manual reload.
+    safe_broadcast(
+      "panel",
+      "match_#{match.id}_panel",
+      "match_panel_#{match.id}",
+      "matches/panel",
+      match
+    )
+  end
+
+  def safe_broadcast(name, stream, target, partial, match)
+    Turbo::StreamsChannel.broadcast_replace_to(
+      stream,
+      target: target,
+      partial: partial,
       locals: { match: match }
     )
+  rescue => e
+    Rails.logger.warn "[MatchSimulationJob] failed to broadcast #{name}: #{e.class.name}: #{e.message}"
   end
 end
