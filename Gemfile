@@ -11,6 +11,7 @@ gem "turbo-rails"                      # Hotwire Turbo
 gem "stimulus-rails"                   # Hotwire Stimulus
 gem "tailwindcss-rails"                # Tailwind CSS
 gem "solid_queue"                      # Background jobs (Rails 8 native)
+gem "solid_queue_dashboard"          # Dashboard for monitoring Solid Queue jobs
 gem "solid_cable"                      # ActionCable adapter (Rails 8 native)
 gem "solid_cache"                      # Cache adapter (Rails 8 native)
 gem "jbuilder"                         # JSON views

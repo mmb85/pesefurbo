@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  mount SolidQueueDashboard::Engine, at: "/solid-queue"
+  
   root "clubs#index"
 
   resources :matches, only: [:index, :show] do

@@ -52,9 +52,7 @@ services:
   solid_queue:
     build: .
     container_name: pcfutbol_queue
-    # Use ruby to run the Rails 8 standard `bin/jobs` executable
-    entrypoint: ["ruby", "bin/jobs"]
-    command: []
+    command: bundle exec rails solid_queue:start
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://pcfutbol_user:pcfutbol_password@db:5432/pcfutbol_development
