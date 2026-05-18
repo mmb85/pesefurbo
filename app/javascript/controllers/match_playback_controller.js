@@ -122,7 +122,6 @@ export default class extends Controller {
 
     if (["goal", "penalty_goal", "own_goal", "long_shot_goal"].includes(event.event_type)) {
       this.updateScore(event)
-      this.flashGoal(event.team)
     }
 
     if (event.event_type === "halftime") {
@@ -221,13 +220,6 @@ export default class extends Controller {
       this.minuteTarget.textContent = "FIN"
       this.minuteTarget.classList.remove("live")
     }
-  }
-
-  flashGoal(team) {
-    const scoreboard = document.getElementById("scoreboard")
-    if (!scoreboard) return
-    scoreboard.classList.add("goal-flash")
-    setTimeout(() => scoreboard.classList.remove("goal-flash"), 1200)
   }
 
   animateElement(el) {
