@@ -142,6 +142,11 @@ module MatchEngine
           home_possession: home_poss, away_possession: away_poss })
 
       ActiveRecord::Base.transaction do
+        # Ensure idempotency: remove any previous events/lineups for this match
+        # so re-running a simulation (due to retries) replaces prior partial results
+        @match.match_events.delete_all
+        @match.lineups.delete_all
+
         @match.update!(
           status:          "simulated",
           home_goals:      @home_goals,
@@ -712,11 +717,22 @@ module MatchEngine
                ev[:club].is_a?(Hash) ? ev[:club][:club] : 
                nil
 
+        event_type = ev[:event_type].to_s
+        unless MatchEvent::TYPES.include?(event_type)
+          Rails.logger.warn "[MatchEngine::Simulator] Skipping invalid event_type=#{event_type.inspect}"
+          next
+        end
+
+        unless club.is_a?(Club)
+          Rails.logger.warn "[MatchEngine::Simulator] Skipping event without valid club: #{ev.inspect}"
+          next
+        end
+
         @match.match_events.create!(
           club:        club,
           minute:      ev[:minute],
           added_time:  ev[:added_time] || 0,
-          event_type:  ev[:event_type],
+          event_type:  event_type,
           description: ev[:description],
           payload:     ev[:payload] || {}
         )
@@ -725,40 +741,42 @@ module MatchEngine
 
     def persist_lineups!
       [[@home, @match.home_club], [@away, @match.away_club]].each do |state, club|
-        # Ensure state and its collections are not nil
         state ||= {}
         starters = state[:starters] || []
         bench = state[:bench] || []
-        
-        # Combine starters and bench, filtering out nil entries
         all = [*starters, *bench].compact
 
+        position_map = {
+          'AM' => 'CAM',
+          'SS' => 'CF',
+          'LW' => 'LW',
+          'RW' => 'RW',
+          'ST' => 'ST',
+          'DM' => 'DM',
+          'CM' => 'CM'
+        }
+
         all.each do |p|
-          # Skip if player hash is invalid
           next unless p.is_a?(Hash) && p[:known_as].present?
 
           player = Player.find_by(known_as: p[:known_as])
           next unless player
+          next if Lineup.exists?(match: @match, club: club, player: player)
 
-          # Map non-standard positions to valid lineup positions
-          position_map = {
-            'AM' => 'CAM',
-            'SS' => 'CF',
-            'LW' => 'LW',
-            'RW' => 'RW',
-            'ST' => 'ST',
-            'DM' => 'DM',
-            'CM' => 'CM'
-          }
+          status_value = (p[:on_pitch] || p[:substituted]) ? "starter" : "substitute"
+          status_value = "starter" unless Lineup::STATUSES.include?(status_value)
 
           mapped_pos = position_map[p[:pos]] || p[:pos]
+          mapped_pos = nil unless mapped_pos.is_a?(String) && Lineup::POSITIONS.include?(mapped_pos)
+
+          shirt_number = p[:num].to_i if p[:num].present?
 
           @match.lineups.create!(
             club:               club,
             player:             player,
-            formation_position: mapped_pos || 'Unknown',
-            shirt_number:       p[:num] || 0,
-            status:             p[:on_pitch] || p[:substituted] ? "starter" : "substitute",
+            formation_position: mapped_pos,
+            shirt_number:       shirt_number,
+            status:             status_value,
             minute_off:         p[:substituted] ? p[:minutes_played] : nil,
             rating:             ((6.0 + (p[:rating_delta] || 0)).clamp(1, 10)).round(1)
           )

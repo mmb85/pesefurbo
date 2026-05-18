@@ -1,10 +1,18 @@
 <h1>Matches</h1>
 
-<% if @rounds.any? %>
-  <% @rounds.each do |round, matches| %>
-    <h2>Round <%= round %></h2>
+<% if @weeks.any? %>
+  <div class="weeks-selector">
+    <% @weeks.each do |week| %>
+      <% is_selected = @selected_week&.id == week.id %>
+      <% css_class = is_selected ? "selected" : "" %>
+      <%= link_to "Week #{week.week_number}", matches_path(week_id: week.id), class: "week-link #{css_class}" %>
+    <% end %>
+  </div>
+
+  <% if @selected_week && @selected_week.matches.any? %>
+    <h2>Week <%= @selected_week.week_number %></h2>
     <ul>
-      <% matches.each do |match| %>
+      <% @selected_week.matches.order(:kickoff_at).each do |match| %>
         <li>
           <%= link_to "#{match.home_club.name} vs #{match.away_club.name}", match_path(match) %>
           <span><%= match.status %></span>
@@ -14,7 +22,9 @@
         </li>
       <% end %>
     </ul>
+  <% elsif @selected_week %>
+    <p>No matches for week <%= @selected_week.week_number %>.</p>
   <% end %>
 <% else %>
-  <p>No matches available.</p>
+  <p>No weeks or matches available.</p>
 <% end %>

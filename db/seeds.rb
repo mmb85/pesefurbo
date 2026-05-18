@@ -104,7 +104,7 @@ CLUB_ABBR_MAPPING = {
   "FC Barcelona" => "BAR"
 }.freeze
 
-CSV.foreach('csv_lite_optimized.csv', headers: true) do |row|
+CSV.foreach(Rails.root.join('csv_lite_optimized.csv'), headers: true) do |row|
   # Skip rows with missing essential data
   next unless row['Equipo'].present? && row['Jugador'].present? && row['Posicion'].present? && row['Media'].present?
 
@@ -160,7 +160,114 @@ CSV.foreach('csv_lite_optimized.csv', headers: true) do |row|
 end
 
 # -------------------------------------------------------------------------
-# PHASE 4: SUMMARY
+# PHASE 3B: CREATE CLUB SEASONS
+# -------------------------------------------------------------------------
+
+puts "\nLinking clubs to competition season..."
+clubs_set = Set.new
+Club.where(country: spain).each do |club|
+  ClubSeason.find_or_create_by!(club: club, competition_season: cs) do |cs_link|
+    cs_link.board_confidence = 70
+    cs_link.team_morale = 60
+    cs_link.budget_total = 10_000_000
+    cs_link.budget_transfers = 5_000_000
+    cs_link.budget_wages = 5_000_000
+    cs_link.expected_position = 10
+  end
+  clubs_set.add(club)
+end
+
+puts "Linked #{clubs_set.count} clubs to competition season"
+
+# -------------------------------------------------------------------------
+# PHASE 4: CREATE WEEKS AND MATCHES
+# -------------------------------------------------------------------------
+
+puts "\n" + "=" * 80
+puts "Creating weeks and matches..."
+puts "=" * 80
+
+# Get all clubs for the competition season
+clubs = cs.clubs.to_a
+num_teams = clubs.length
+num_weeks = cs.rounds_total
+matches_per_week = num_teams / 2
+
+puts "Generating round-robin schedule for #{num_teams} teams over #{num_weeks} weeks..."
+puts "Matches per week: #{matches_per_week}"
+
+# Create all weeks
+weeks = []
+num_weeks.times do |week_num|
+  week = Week.find_or_create_by!(competition_season: cs, week_number: week_num + 1) do |w|
+    w.starts_at = cs.season.starts_on + (week_num * 7).days
+    w.ends_at = cs.season.starts_on + (week_num * 7).days + 6.days
+  end
+  weeks << week
+  puts "Created week #{week.week_number}"
+end
+
+# Generate round-robin schedule (simple rotating algorithm)
+def generate_round_robin_schedule(clubs)
+  schedule = []
+  clubs_arr = clubs.dup
+  num_teams = clubs_arr.length
+  (num_teams - 1).times do |round|
+    matchday = []
+    (num_teams / 2).times do |match_idx|
+      home = clubs_arr[match_idx]
+      away = clubs_arr[num_teams - 1 - match_idx]
+      matchday << [home, away]
+    end
+    schedule << matchday
+
+    # Rotate for next round (keep first team fixed, rotate others)
+    clubs_arr = [clubs_arr.first] + clubs_arr[1..-1].rotate(-1)
+  end
+
+  # Add return fixtures
+  first_half = schedule.dup
+  first_half.each do |matchday|
+    reversed_matchday = matchday.map { |home, away| [away, home] }
+    schedule << reversed_matchday
+  end
+
+  schedule
+end
+
+# Generate schedule
+schedule = generate_round_robin_schedule(clubs)
+
+# Create matches for the first 2 weeks only
+puts "\nCreating matches for first 2 weeks..."
+2.times do |week_idx|
+  week = weeks[week_idx]
+  matchday = schedule[week_idx]
+
+  puts "Creating #{matchday.length} matches for week #{week.week_number}..."
+  matchday.each_with_index do |(home_club, away_club), match_idx|
+    # Create a kickoff time for this match
+    kickoff_time = week.starts_at + (match_idx * 2).hours
+
+    match = Match.find_or_create_by!(
+      competition_season: cs,
+      week: week,
+      home_club: home_club,
+      away_club: away_club
+    ) do |m|
+      m.round = week_idx + 1
+      m.status = 'scheduled'
+      m.kickoff_at = kickoff_time
+      m.stadium = home_club.stadium
+      m.home_goals = 0
+      m.away_goals = 0
+    end
+    puts "  - #{home_club.name} vs #{away_club.name} (Week #{week.week_number})"
+  end
+end
+
+# -------------------------------------------------------------------------
+# PHASE 5: SUMMARY
 # -------------------------------------------------------------------------
 
 puts "\n" + "=" * 80
@@ -176,4 +283,6 @@ puts "  • #{Club.count} Clubs"
 puts "  • #{Player.count} Players"
 puts "  • #{Contract.count} Contracts"
 puts "  • #{PlayerSeasonStat.count} Player Season Stats"
+puts "  • #{Week.count} Weeks"
+puts "  • #{Match.count} Matches"
 puts "=" * 80

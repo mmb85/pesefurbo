@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_17_200846) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_18_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -226,6 +226,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_200846) do
     t.bigint "stadium_id"
     t.string "status", default: "scheduled", null: false
     t.datetime "updated_at", null: false
+    t.bigint "week_id"
     t.index ["away_club_id"], name: "index_matches_on_away_club_id"
     t.index ["competition_season_id", "round"], name: "index_matches_on_competition_season_id_and_round"
     t.index ["competition_season_id"], name: "index_matches_on_competition_season_id"
@@ -233,6 +234,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_200846) do
     t.index ["kickoff_at"], name: "index_matches_on_kickoff_at"
     t.index ["stadium_id"], name: "index_matches_on_stadium_id"
     t.index ["status"], name: "index_matches_on_status"
+    t.index ["week_id", "kickoff_at"], name: "index_matches_on_week_id_and_kickoff_at"
+    t.index ["week_id"], name: "index_matches_on_week_id"
   end
 
   create_table "news_items", force: :cascade do |t|
@@ -542,6 +545,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_200846) do
     t.index ["to_club_id"], name: "index_transfers_on_to_club_id"
   end
 
+  create_table "weeks", force: :cascade do |t|
+    t.bigint "competition_season_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "ends_at"
+    t.datetime "starts_at"
+    t.datetime "updated_at", null: false
+    t.integer "week_number", null: false
+    t.index ["competition_season_id", "week_number"], name: "index_weeks_on_competition_season_id_and_week_number", unique: true
+    t.index ["competition_season_id"], name: "index_weeks_on_competition_season_id"
+  end
+
   add_foreign_key "club_season_standings", "club_seasons"
   add_foreign_key "club_seasons", "clubs"
   add_foreign_key "club_seasons", "competition_seasons"
@@ -570,6 +584,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_200846) do
   add_foreign_key "matches", "clubs", column: "home_club_id"
   add_foreign_key "matches", "competition_seasons"
   add_foreign_key "matches", "stadiums"
+  add_foreign_key "matches", "weeks"
   add_foreign_key "news_items", "clubs"
   add_foreign_key "news_items", "matches"
   add_foreign_key "news_items", "players"
@@ -596,4 +611,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_200846) do
   add_foreign_key "transfers", "clubs", column: "to_club_id"
   add_foreign_key "transfers", "players"
   add_foreign_key "transfers", "seasons"
+  add_foreign_key "weeks", "competition_seasons"
 end

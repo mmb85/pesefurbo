@@ -5,7 +5,8 @@
 class MatchSimulationJob < ApplicationJob
   queue_as :default
 
-  retry_on StandardError, attempts: 3, wait: :polynomially_longer
+  # Run only once; do not re-enqueue multiple times to avoid duplicate side-effects
+  retry_on StandardError, attempts: 1, wait: :polynomially_longer
 
   def perform(match_id)
     match = Match.find(match_id)

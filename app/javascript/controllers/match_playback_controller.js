@@ -49,8 +49,13 @@ export default class extends Controller {
     this.awayGoals    = 0
     this.timer        = null
 
+    if (!this.hasEventsValue) {
+      console.warn("[MatchPlayback] No events data attribute present.")
+      return
+    }
+
     if (this.eventsValue.length === 0) {
-      console.warn("[MatchPlayback] No events found in data attribute. Check that @events_json is set correctly.")
+      console.log("[MatchPlayback] No events to play for this match.")
       return
     }
 

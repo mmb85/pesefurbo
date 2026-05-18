@@ -3,6 +3,7 @@
 # ==============================================================================
 class Match < ApplicationRecord
   belongs_to :competition_season
+  belongs_to :week, optional: true
   belongs_to :home_club, class_name: "Club"
   belongs_to :away_club, class_name: "Club"
   belongs_to :stadium, optional: true

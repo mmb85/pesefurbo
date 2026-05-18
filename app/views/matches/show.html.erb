@@ -29,10 +29,12 @@
   <%# PANEL: PARTIDO %>
   <%# ─────────────────────────────────────────────────────────────────────── %>
   <div data-panel="partido" data-navigation-target="panel"
-       data-controller="match-playback"
-       data-match-playback-events-value="<%= @events_json %>"
-       data-match-playback-interval-value="5000"
-       data-match-playback-autoplay-value="<%= @match.simulated? %>">
+       <% if @has_match_events %>
+         data-controller="match-playback"
+         data-match-playback-events-value='<%= raw(@events_json) %>'
+       <% end %>
+      data-match-playback-autoplay-value="<%= @has_match_events %>"
+       data-match-playback-interval-value="5000">
 
     <%# SCOREBOARD %>
     <div class="win-panel mb-2" id="scoreboard">
@@ -115,7 +117,7 @@
       <div class="narration-feed font-mono text-sm"
            data-match-playback-target="feed"
            style="height:280px;overflow-y:auto;padding:8px;background:#000;">
-        <% if @match.simulated? %>
+        <% if @match.simulated? || @has_match_events %>
           <div class="ev-system nar-event">
             <span class="nar-min">0'</span>
             <span class="nar-text">Partido ya simulado. Reproduciendo retransmisión...</span>

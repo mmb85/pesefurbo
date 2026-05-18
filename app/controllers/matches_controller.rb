@@ -6,16 +6,18 @@ class MatchesController < ApplicationController
 
   def index
     @competition_season = current_competition_season
+    @weeks = @competition_season&.weeks_with_matches || []
     @matches = @competition_season&.matches
-                                  &.includes(:home_club, :away_club)
-                                  &.order(:round, :kickoff_at) || Match.none
-    @rounds  = @matches.group_by(&:round)
+                                  &.includes(:home_club, :away_club, :week)
+                                  &.order(:kickoff_at) || Match.none
+    @selected_week = params[:week_id].present? ? Week.find(params[:week_id]) : @weeks.first
   end
 
   def show
     # @events_json is a JSON array string consumed by the match-playback Stimulus controller.
     # events_payload is already an Array (stored as JSONB), so .to_json gives us the JS-ready string.
-    @events_json = @match.simulated? ? @match.events_payload.to_json : "[]"
+    @has_match_events = @match.match_events.exists?
+    @events_json = @has_match_events ? @match.events_payload.to_json : "[]"
     @home_lineup = @match.lineups.where(club: @match.home_club).includes(:player).order(:shirt_number)
     @away_lineup = @match.lineups.where(club: @match.away_club).includes(:player).order(:shirt_number)
 
