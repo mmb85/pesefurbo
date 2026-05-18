@@ -31,8 +31,6 @@
     <%= render partial: 'matches/panel', locals: { match: @match } %>
   </div>
 
-  </div>
-
   <%# ─────────────────────────────────────────────────────────────────────── %>
   <%# PANEL: ESTADÍSTICAS %>
   <%# ─────────────────────────────────────────────────────────────────────── %>
@@ -112,7 +110,7 @@
                 <%= lineup.formation_position %>
               </span>
               <span class="sh-rating text-amber font-mono text-sm">
-                <%= (lineup.rating.to_f / 10).round(1) %>
+                <%= lineup.rating.to_f.round(1) %>
               </span>
             </div>
           <% end %>
@@ -135,7 +133,7 @@
                 <%= lineup.formation_position %>
               </span>
               <span class="sh-rating text-amber font-mono text-sm">
-                <%= (lineup.rating.to_f / 10).round(1) %>
+                <%= lineup.rating.to_f.round(2) %>
               </span>
             </div>
           <% end %>

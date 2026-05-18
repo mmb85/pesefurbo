@@ -1,30 +1,48 @@
-<h1>Matches</h1>
+<% content_for :title, "Partidos" %>
 
-<% if @weeks.any? %>
-  <div class="weeks-selector">
-    <% @weeks.each do |week| %>
-      <% is_selected = @selected_week&.id == week.id %>
-      <% css_class = is_selected ? "selected" : "" %>
-      <%= link_to "Week #{week.week_number}", matches_path(week_id: week.id), class: "week-link #{css_class}" %>
-    <% end %>
-  </div>
+<div class="win-desktop-area app-content">
 
-  <% if @selected_week && @selected_week.matches.any? %>
-    <h2>Week <%= @selected_week.week_number %></h2>
-    <ul>
-      <% @selected_week.matches.order(:kickoff_at).each do |match| %>
-        <li>
-          <%= link_to "#{match.home_club.name} vs #{match.away_club.name}", match_path(match) %>
-          <span><%= match.status %></span>
-          <% if match.status == "finished" %>
-            <span><%= match.home_goals %> - <%= match.away_goals %></span>
-          <% end %>
-        </li>
+  <div class="win-panel">
+    <div class="win-titlebar">
+      <div class="win-titlebar-left">📅 CALENDARIO DE PARTIDOS</div>
+      <div class="win-btns">
+        <%= button_to "⚡ Simular todos", simulate_all_matches_path,
+          method: :post,
+          class: "btn-primary text-xs px-3 py-1",
+          style: "font-size:12px;padding:3px 10px;" %>
+      </div>
+    </div>
+    <div class="p-3">
+
+      <% if @weeks.any? %>
+        <% @weeks.each do |week| %>
+          <div class="mb-4">
+            <div class="section-head mb-2">
+              <span class="font-pixel text-xs text-amber">JORNADA <%= week.week_number %></span>
+            </div>
+            <% week.matches.each do |m| %>
+              <%= link_to match_path(m), class: "match-row #{m.status == 'simulated' || m.status == 'finished' ? 'simulated' : ''}" do %>
+                <span class="mrow-home"><%= m.home_club.name %></span>
+                <span class="mrow-score">
+                  <% if m.simulated? %>
+                    <%= m.home_goals %>–<%= m.away_goals %>
+                  <% else %>
+                    vs
+                  <% end %>
+                </span>
+                <span class="mrow-away"><%= m.away_club.name %></span>
+                <span class="status-badge status-<%= m.status %>"><%= m.status.upcase %></span>
+                <% if m.simulated? %>
+                  <%= turbo_stream_from "match_#{m.id}_status" %>
+                <% end %>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="text-dim font-mono text-sm p-4">No hay partidos generados. Ejecuta <code>rails db:seed</code>.</p>
       <% end %>
-    </ul>
-  <% elsif @selected_week %>
-    <p>No matches for week <%= @selected_week.week_number %>.</p>
-  <% end %>
-<% else %>
-  <p>No weeks or matches available.</p>
-<% end %>
+
+    </div>
+  </div>
+</div>
