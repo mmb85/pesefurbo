@@ -13,5 +13,5 @@ done
 # Run pending migrations
 bundle exec rake db:migrate
 
-# Execute the command passed as arguments
+# Execute the command passed as arguments (bundle exec rails server / bundle exec ruby bin/jobs)
 exec "$@"

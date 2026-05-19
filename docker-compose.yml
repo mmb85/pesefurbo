@@ -52,7 +52,9 @@ services:
   solid_queue:
     build: .
     container_name: pcfutbol_queue
-    command: bundle exec rails solid_queue:start
+    restart: on-failure
+    # Usamos bundle exec para mantener consistencia con el entrypoint
+    command: bundle exec ruby bin/jobs
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://pcfutbol_user:pcfutbol_password@db:5432/pcfutbol_development
